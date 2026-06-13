@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Prediction History</title>
+
+    <style>
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 0 0 15px 15px;
+        }
+
+        .user-box {
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .user-box span {
+            font-weight: bold;
+            color: #ffd166;
+        }
+
+        .logout-btn {
+            background: linear-gradient(45deg, #ff4d4d, #ff0000);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .logout-btn:hover {
+            transform: scale(1.05);
+        }       
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            margin: 0;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: white;
+        }
+
+        /* Cards */
+        .cards {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .card {
+            flex: 1;
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            padding: 10px;
+        }
+
+        td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+
+        /* Section */
+        .section {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        /* Button */
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #ff7e5f;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="user-box">
+        👤 Welcome, <span>{{ user }}</span>
+    </div>
+
+    <a href="/logout" class="logout-btn">Logout</a>
+</div>
+
+<div class="container">
+
+    <h2 style="
+    text-align:center;
+    color:white;
+    background: linear-gradient(90deg, #36d1dc, #5b86e5);
+    padding:15px;
+    border-radius:10px;">
+    📈 Stress History Dashboard
+    </h2>
+
+    <!-- SUMMARY CARDS -->
+    <div class="cards">
+
+        <div class="card">
+            <h4 style="color:#007bff;">Total Records</h4>
+            <p>{{ data|length }}</p>
+        </div>
+
+        <div class="card">
+            <h4 style="color:#ff9800;">Average Score</h4>
+            <p>
+                {{ (scores | sum / scores|length) | round(1) if scores|length > 0 else 0 }}
+            </p>
+        </div>
+
+        <div class="card">
+            <h4 style="color:#e63946;">Latest Level</h4>
+            <p>
+                {{ data[-1][2] if data|length > 0 else "N/A" }}
+            </p>
+        </div>
+
+    </div>
+
+    <!-- TREND GRAPH -->
+    <div class="section">
+        <h3 style="color:#6a5acd;">📊 Stress Trend</h3>
+        <canvas id="trendChart"></canvas>
+    </div>
+
+    <!-- TABLE -->
+    <div class="section">
+        <h3 style="color:#2a9d8f;">📋 History Records</h3>
+
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Score</th>
+                <th>Stress Level</th>
+                <th>Risk %</th>
+            </tr>
+
+            {% for row in data %}
+            <tr>
+                <td>{{ row[0] }}</td>
+                <td>{{ row[1] }}</td>
+                <td>{{ row[2] }}</td>
+                <td>{{ row[3] }}</td>
+            </tr>
+            {% endfor %}
+
+        </table>
+    </div>
+
+    <!-- BACK BUTTON -->
+    <div style="text-align:center; margin-top:20px;">
+
+    <a href="/" class="btn">
+        🏠 Home
+    </a>
+
+    <a href="/result" class="btn" style="background:#6a5acd; margin-left:10px;">
+        🔍 View Last Result
+    </a>
+
+    </div>
+
+</div>
+
+<!-- CHART SCRIPT -->
+<script>
+const dates = {{ dates | tojson | safe }};
+const scores = {{ scores | tojson | safe }};
+
+if (dates.length > 0) {
+
+    new Chart(document.getElementById('trendChart'), {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Stress Score',
+                data: scores,
+                borderWidth: 2,
+                fill: false
+            }]
+        }
+    });
+
+}
+</script>
+
+</body>
+</html>
