@@ -260,6 +260,40 @@ body {
     background: #22c55e;
     color: white;
 }
+#prevBtn {
+    background: #e5e7eb;
+    color: #333;
+}
+
+.prev-btn {
+    background: #e5e7eb;
+    color: #333;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.prev-btn:hover {
+    background: #d1d5db;
+    transform: scale(1.05);
+}
+
+#btnContainer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+/* When only Next button → push right */
+#btnContainer.single {
+    justify-content: flex-end;
+}
+
+#nextBtn {
+    margin-left: auto;
+}
 </style>
 </head>
 
@@ -492,9 +526,23 @@ body {
 </div>
 </div>
 
-<div style="display:flex; justify-content:flex-end; margin-top:20px;">
-    <button type="button" id="nextBtn" class="next-btn" onclick="nextQuestion()">Next ➜</button>
-    <button type="button" id="submitBtn" class="next-btn" style="display:none;" onclick="submitForm()">Analze Stress Levels</button>
+<div id="btnContainer">
+
+    <!-- Previous -->
+    <button type="button" id="prevBtn" class="prev-btn" onclick="prevQuestion()" style="display:none;">
+        ← Previous
+    </button>
+
+    <!-- Next -->
+    <button type="button" id="nextBtn" class="next-btn" onclick="nextQuestion()">
+        Next →
+    </button>
+
+    <!-- Submit -->
+    <button type="button" id="submitBtn" class="next-btn" style="display:none;" onclick="submitForm()">
+        Analyze Stress Levels →
+    </button>
+
 </div>
 
 
@@ -523,34 +571,54 @@ function nextQuestion() {
         return;
     }
 
-    // Remove current
-    questions[current].classList.remove("active");
+    // 🔥 IF LAST QUESTION (Q12)
+    if(current === questions.length - 1){
 
-    current++;
+        // ❌ Hide Q12
+        questions[current].classList.remove("active");
 
-    // ✅ If still questions left
-    if(current < questions.length){
-
-        questions[current].classList.add("active");
-
-        document.getElementById("qNumber").innerText =
-            "Question " + (current+1) + " of 12";
-
-        // 🔥 If next is LAST question
-        if(current === questions.length - 1){
-            document.getElementById("nextBtn").innerText = "Next →";
-        }
-
-    } 
-    else {
-        // 🔥 LAST QUESTION COMPLETED
-
-        // Hide Next button
+        // ❌ Hide Next button
         document.getElementById("nextBtn").style.display = "none";
 
-        // Show Submit button
+        // ✅ Show Analyze button
         document.getElementById("submitBtn").style.display = "inline-block";
+
+        // 👉 Optional: change question text
+        document.getElementById("qNumber").innerText = "Ready to Analyze 🎯";
+
+        return;
     }
+
+    // NORMAL FLOW
+    questions[current].classList.remove("active");
+    current++;
+
+    questions[current].classList.add("active");
+
+    document.getElementById("qNumber").innerText =
+        "Question " + (current+1) + " of 12";
+
+    updateButtons();
+}
+
+function prevQuestion() {
+
+    // If we are in analyze screen
+    if(!questions[current].classList.contains("active")){
+        questions[current].classList.add("active");
+    } else {
+        questions[current].classList.remove("active");
+        current--;
+        questions[current].classList.add("active");
+    }
+
+    document.getElementById("qNumber").innerText =
+        "Question " + (current+1) + " of 12";
+
+    document.getElementById("submitBtn").style.display = "none";
+    document.getElementById("nextBtn").style.display = "inline-block";
+
+    updateButtons();
 }
 
 function submitForm(){
@@ -570,8 +638,23 @@ function updateProgress() {
     document.getElementById("progressText").innerText = Math.round(percent) + "%";
 }
 
+function updateButtons(){
 
+    let prevBtn = document.getElementById("prevBtn");
+    let nextBtn = document.getElementById("nextBtn");
+    let submitBtn = document.getElementById("submitBtn");
 
+    // Previous button
+    if(current === 0){
+        prevBtn.style.display = "none";
+    } else {
+        prevBtn.style.display = "inline-block";
+    }
+
+    // Always reset buttons while navigating
+    nextBtn.style.display = "inline-block";
+    submitBtn.style.display = "none";
+}
 </script>
 
 </body>
