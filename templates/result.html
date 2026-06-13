@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stress Analysis Result</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        /* ✅ TOP BAR MATCHING THEME */
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 25px;
+
+            background: linear-gradient(90deg, #667eea, #764ba2); /* SAME AS PAGE */
+            color: white;
+        }
+
+        .welcome {
+            font-size: 15px;
+        }
+
+        .username {
+            color: #ff7e5f;  /* 🔥 Orange like your image */
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background: linear-gradient(45deg, #ff4d4d, #ff0000);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .logout-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .title {
+            text-align: center;
+            color: white;
+            background: linear-gradient(90deg, #ff7e5f, #feb47b);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        /* CARDS */
+        .cards {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .card {
+            flex: 1;
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+
+        .section {
+            background: white;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+
+        .chart-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .chart-box {
+            width: 300px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 6px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .home { background: #ff7e5f; }
+        .history { background: #28a745; }
+        .pdf { background: #6a5acd; }
+
+        ul {
+            padding-left: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ✅ TOP BAR -->
+<div class="topbar">
+    <div class="welcome">
+        👤 Welcome, <span class="username">{{ user }}</span>
+    </div>
+
+    <a href="/logout" class="logout-btn">Logout</a>
+</div>
+
+<div class="container">
+
+    <h2 class="title">🎓 Smart Student Stress Analyzer</h2>
+
+    <!-- CARDS -->
+    <div class="cards">
+
+        <div class="card">
+            <h4 style="color:{{color}};">Stress Level</h4>
+            <p style="color:{{color}}; font-size:20px;">
+                {{ result }}
+            </p>
+        </div>
+
+        <div class="card">
+            <h4 style="color:#007bff;">Score</h4>
+            <p style="color:#007bff;">
+                {{ score }}/32
+            </p>
+        </div>
+
+        <div class="card">
+            <h4 style="color:#e63946;">Risk %</h4>
+            <p style="color:#e63946;">
+                {{ risk_percentage }}%
+            </p>
+        </div>
+
+    </div>
+
+    <!-- CHARTS -->
+    <div class="section">
+        <h3 style="color:#8D8000;">📊 Visual Analysis</h3>
+
+        <div class="chart-container">
+
+            <div class="chart-box">
+                <canvas id="pieChart"></canvas>
+            </div>
+
+            <div class="chart-box">
+                <canvas id="barChart"></canvas>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- FACTORS -->
+    <div class="section">
+        <h3 style="color:#e63946;">⚠ Key Factors</h3>
+        <ul>
+            {% for r in reasons %}
+                <li>{{ r }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- SUGGESTIONS -->
+    <div class="section">
+        <h3 style="color:#008000;">💡 Recommendations</h3>
+        <ul>
+            {% for s in suggestions %}
+                <li>{{ s }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- AI -->
+    <div class="section">
+        <h3 style="color:#6a5acd;">🧠 AI Insight</h3>
+        <p>{{ explanation }}</p>
+    </div>
+
+    <!-- BUTTONS -->
+    <div style="text-align:center;">
+        <a href="/" class="btn home">🏠 Home</a>
+        <a href="/history" class="btn history">📈 History</a>
+        <button onclick="downloadPDF()" class="btn" style="background:#6a5acd;">
+        📄 Download PDF</button>
+    </div>
+
+</div>
+
+<!-- PIE -->
+<script>
+const score = {{ score }};
+const stress = (score / 32) * 100;
+const remain = 100 - stress;
+
+new Chart(document.getElementById('pieChart'), {
+    type: 'doughnut',
+    data: {
+        labels: ['Stress', 'Remaining'],
+        datasets: [{
+            data: [stress, remain],
+            backgroundColor: ['#ff4d4d', '#4CAF50']
+        }]
+    }
+});
+</script>
+
+<!-- BAR -->
+<script>
+new Chart(document.getElementById('barChart'), {
+    type: 'bar',
+    data: {
+        labels: ["Sleep","Study","Exam","Workload","Focus","Screen","Physical","SleepQ","Emotion","Routine","Breaks","Support"],
+        datasets: [{
+            label: "Input Analysis",
+            data: {{ features | tojson }},
+            backgroundColor: '#667eea'
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 3
+            }
+        }
+    }
+});
+</script>
+
+<!-- PDF LIBRARIES -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+async function downloadPDF() {
+
+    const { jsPDF } = window.jspdf;
+
+    // capture only result area
+    const element = document.querySelector(".container");
+
+    const canvas = await html2canvas(element, {
+        scale: 2,   // HD quality
+        useCORS: true
+    });
+
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF("p", "mm", "a4");
+
+    const pageWidth = 210;
+    const pageHeight = 297;
+
+    const imgWidth = pageWidth;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    let heightLeft = imgHeight;
+    let position = 0;
+
+    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    // 🔥 MULTI PAGE SUPPORT
+    while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+    }
+
+    pdf.save("Stress_Report.pdf");
+}
+</script>
+
+
+</body>
+</html>
