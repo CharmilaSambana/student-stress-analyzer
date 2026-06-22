@@ -9,7 +9,8 @@
         padding:12px;
         border-radius:8px;
         text-align:center;
-        margin-bottom:15px;">
+        margin-bottom:15px;
+        font-weight:bold;">
         {{ alert }}
     </div>
     {% endif %}
@@ -260,8 +261,20 @@
         <div class="card">
             <h4 style="color:{{color}};">Stress Level</h4>
             <p style="color:{{color}}; font-size:20px;">
+                <span style="
+                    padding:8px 16px;
+                    border-radius:20px;
+                    color:white;
+                    font-weight:bold;
+                    background:
+                    {% if result == 'Low' %}#2ecc71
+                    {% elif result == 'Moderate' %}#f39c12
+                    {% else %}#e74c3c
+                    {% endif %};
+               ">
                 {{ result }}
-            </p>
+                 </span>
+           </p>
         </div>
 
         <div class="card">
@@ -313,12 +326,12 @@
 
     <!-- SUGGESTIONS -->
     <div class="section">
-        <h3 style="color:#008000;">💡 Recommendations</h3>
-        <ul>
-            {% for s in suggestions %}
-                <li>{{ s }}</li>
-            {% endfor %}
-        </ul>
+     <h3 style="color:#2a9d8f;">💡 Suggestions</h3>
+     <ul>
+        {% for s in suggestions %}
+        <li>👉 {{ s }}</li>
+        {% endfor %}
+    </ul>
     </div>
 
     <!-- AI -->
@@ -327,6 +340,9 @@
         <p>{{ explanation }}</p>
     </div>
 
+    <p style="text-align:center; margin-top:20px; color:white;">
+    This system helps in early detection of mental health risks.
+    </p>
     <!-- BUTTONS -->
     <div style="text-align:center;">
         <a href="/" class="btn home">🏠 Home</a>
