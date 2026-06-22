@@ -202,16 +202,21 @@ def predict():
        reasons.append("No major stress factors detected")
        suggestions.append("Maintain your current healthy routine")
     
-    explanation = ""
+    health_message = ""
 
     if result == "High":
-       explanation = "Your stress level is high mainly due to " + ", ".join(reasons[:2]) + ". These factors are significantly impacting your mental health."
-    
+        health_message = "⚠️ Your stress level is critically high. Immediate attention is recommended to prevent serious mental health impact."
+
     elif result == "Moderate":
-       explanation = "Your stress is moderate. Main contributing factors are " + ", ".join(reasons[:2]) + "."
-    
+        health_message = "⚡ Your stress level is moderate. It is advisable to manage stress before it increases."
+
     else:
-       explanation = "Your stress level is low. You are maintaining a healthy balance."
+        health_message = "✅ Your mental health is stable. Keep maintaining your current lifestyle."
+
+    alert = None
+
+    if result == "High":
+        alert = "🚨 High Stress Alert: Please take immediate action and consider talking to someone."
     
     factor_score = []
 
@@ -250,7 +255,8 @@ def predict():
     session['color'] = color
     session['reasons'] = reasons
     session['suggestions'] = suggestions
-    session['explanation'] = explanation
+    session['health_message'] = health_message
+    session['alert'] = alert
 
     # -------- SAVE TO CSV --------
     filename = f"history_{session['user']}.csv"
@@ -271,7 +277,7 @@ def predict():
     else:
         color="red"
 
-
+    
     # -------- SHOW RESULT --------
     return render_template(
         "result.html",
@@ -280,7 +286,8 @@ def predict():
         color=color,
         reasons=reasons,
         suggestions=suggestions,
-        explanation=explanation,
+        health_message=health_message,
+        alert=alert,
         risk_percentage=risk_percentage,
         factor_score=factor_score,
         features=features,
