@@ -102,199 +102,137 @@ def home():
 # ---------------- PREDICT ----------------
 @app.route('/predict', methods=['POST'])
 def predict():
-    
+
     if 'user' not in session:
         return redirect('/login')
 
-    # -------- INPUTS (MATCH YOUR HTML) --------
-    sleep = int(request.form['sleep'])
-    study = int(request.form['study'])
-    exam = int(request.form['exam'])
-    workload = int(request.form['workload'])
-    concentration = int(request.form['concentration'])
-    screen = int(request.form['screen'])
-    physical = int(request.form['physical'])
-    sleep_quality = int(request.form['sleep_quality'])
-    emotional = int(request.form['emotional'])
-    routine = int(request.form['routine'])
-    breaks = int(request.form['breaks'])
-    support = int(request.form['support'])
+    try:
+        # 🔹 Get input values from form
+        sleep_hours = float(request.form['sleep_hours'])
+        study_hours = float(request.form['study_hours'])
+        social_support = float(request.form['social_support'])
 
-    # -------- SIMPLE SCORE LOGIC (NO ML PROBLEM) --------
-    score = sum([
-        sleep, study, exam, workload,
-        concentration, screen, physical,
-        sleep_quality, emotional, routine,
-        breaks, support
-    ])
+        # Add all your other inputs here if present
+        input_data = [sleep_hours, study_hours, social_support]
 
-    # limit score to 32
-    if score > 32:
-        score = 32
+        # 🔹 ML Prediction
+        prediction = model.predict([input_data])[0]
 
-    score_text = f"{score}/32"
+        # 🔹 Convert to Stress Level
+        if prediction == 0:
+            result = "Low"
+        elif prediction == 1:
+            result = "Moderate"
+        else:
+            result = "High"
 
-    # -------- STRESS LEVEL --------
-    if score <= 10:
-        result = "Low"
-        color = "green"
-    elif score <= 20:
-        result = "Moderate"
-        color = "orange"
-    else:
-        result = "High"
-        color = "red"
-    
-    reasons = []
-    suggestions = []
+        # 🔹 Risk Percentage (simple logic or use probability if available)
+        if result == "Low":
+            risk = "20%"
+        elif result == "Moderate":
+            risk = "50%"
+        else:
+            risk = "85%"
 
-# ---------------- KEY FACTORS ----------------
+        # 🔹 Reasons (AI explanation)
+        reasons = []
 
-    if sleep >= 2:
-       reasons.append("Poor sleep pattern affecting mental health")
-       suggestions.append("Maintain 7-8 hours sleep daily")
+        if sleep_hours < 6:
+            reasons.append("Low sleep duration")
+        if study_hours > 8:
+            reasons.append("High academic workload")
+        if social_support < 3:
+            reasons.append("Low social interaction")
 
-    if study >= 2:
-       reasons.append("High study pressure increases stress")
-       suggestions.append("Use Pomodoro technique for study balance")
+        if not reasons:
+            reasons.append("Balanced lifestyle factors")
 
-    if exam >= 2:
-       reasons.append("Exam stress is high")
-       suggestions.append("Practice relaxation before exams")
+        # 🔹 Suggestions (Healthcare Action)
+        if result == "Low":
+            suggestions = [
+                "Maintain your healthy routine",
+                "Keep a consistent sleep schedule",
+                "Stay physically active"
+            ]
 
-    if workload >= 2:
-       reasons.append("Heavy academic workload")
-       suggestions.append("Break tasks into small tasks")
+        elif result == "Moderate":
+            suggestions = [
+                "Take regular breaks during study",
+                "Practice breathing or meditation",
+                "Improve sleep quality",
+                "Talk with friends or family"
+            ]
 
-    if concentration >= 2:
-       reasons.append("Low concentration level")
-       suggestions.append("Reduce distractions while studying")
+        else:
+            suggestions = [
+                "Take immediate rest",
+                "Talk to a trusted person or mentor",
+                "Try relaxation techniques like meditation",
+                "Reduce workload temporarily",
+                "Seek professional help if needed"
+            ]
 
-    if screen >= 2:
-       reasons.append("High screen time usage")
-       suggestions.append("Limit mobile usage before sleep")
+        # 🔴 NEW: Health Message (Healthcare tone)
+        if result == "High":
+            health_message = "⚠️ Your stress level is critically high. Immediate attention is recommended to prevent serious mental health impact."
 
-    if physical >= 2:
-       reasons.append("Low physical activity")
-       suggestions.append("Do daily exercise or walking")
+        elif result == "Moderate":
+            health_message = "⚡ Your stress level is moderate. It is advisable to manage stress before it increases."
 
-    if sleep_quality >= 1:
-       reasons.append("Poor sleep quality")
-       suggestions.append("Avoid screens before bedtime")
+        else:
+            health_message = "✅ Your mental health is stable. Keep maintaining your current lifestyle."
 
-    if emotional >= 2:
-       reasons.append("High anxiety level")
-       suggestions.append("Try meditation or breathing exercises")
+        # 🔴 NEW: Alert system
+        alert = None
+        if result == "High":
+            alert = "🚨 High Stress Alert: Please take immediate action and consider talking to someone."
 
-    if routine >= 2:
-       reasons.append("No proper daily routine")
-       suggestions.append("Follow a fixed daily schedule")
+        # 🔹 Smart Explanation
+        if result == "High":
+            explanation = "Based on your inputs, factors like " + ", ".join(reasons[:2]) + " are significantly contributing to high stress."
 
-    if breaks >= 2:
-       reasons.append("Not taking enough breaks")
-       suggestions.append("Take short breaks while studying")
+        elif result == "Moderate":
+            explanation = "Your stress is influenced by " + ", ".join(reasons[:2]) + ". Early management is recommended."
 
-    if support >= 2:
-       reasons.append("Low emotional support system")
-       suggestions.append("Talk to friends or family regularly")
+        else:
+            explanation = "Your responses indicate a balanced lifestyle with minimal stress risk."
 
-    if len(reasons) == 0:
-       reasons.append("No major stress factors detected")
-       suggestions.append("Maintain your current healthy routine")
-    
-    health_message = ""
+        # 🔹 Save to CSV (history)
+        import csv
+        from datetime import datetime
 
-    if result == "High":
-        health_message = "⚠️ Your stress level is critically high. Immediate attention is recommended to prevent serious mental health impact."
+        with open("history.csv", "a", newline="") as file:
+            writer = csv.writer(file)
+            writer.writerow([
+                datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                prediction,
+                result,
+                risk
+            ])
 
-    elif result == "Moderate":
-        health_message = "⚡ Your stress level is moderate. It is advisable to manage stress before it increases."
+        # 🔹 Store in session
+        session['result'] = result
+        session['risk'] = risk
+        session['reasons'] = reasons
+        session['suggestions'] = suggestions
+        session['explanation'] = explanation
+        session['health_message'] = health_message
+        session['alert'] = alert
 
-    else:
-        health_message = "✅ Your mental health is stable. Keep maintaining your current lifestyle."
+        # 🔹 Send to frontend
+        return render_template(
+            "result.html",
+            result=result,
+            risk=risk,
+            reasons=reasons,
+            suggestions=suggestions,
+            explanation=explanation,
+            health_message=health_message,
+            alert=alert
+        )
 
-    alert = None
-
-    if result == "High":
-        alert = "🚨 High Stress Alert: Please take immediate action and consider talking to someone."
-    
-    factor_score = []
-
-    for r in reasons:
-        if "sleep" in r:
-            factor_score.append(("Sleep Issue", 3))
-        elif "study" in r:
-            factor_score.append(("Study Pressure", 2))
-        elif "screen" in r:
-            factor_score.append(("Screen Time", 1))
-    factor_score.sort(key=lambda x: x[1], reverse=True)
-                      
-    features = [
-    sleep, study, exam, workload,
-    concentration, screen, physical,
-    sleep_quality, emotional, routine,
-    breaks, support
-    ]
-    dates = []
-    scores = []
-
-    with open("history.csv", "r") as file:
-      reader = csv.reader(file)
-      next(reader)
-
-      for row in reader:
-        dates.append(row[0])
-        scores.append(int(row[1].split('/')[0]))
-    # -------- RISK % --------
-    risk_percentage = round((score / 32) * 100, 2)
-
-    session['result'] = result
-    session['score'] = score
-    session['risk'] = risk_percentage
-    session['features'] = features
-    session['color'] = color
-    session['reasons'] = reasons
-    session['suggestions'] = suggestions
-    session['health_message'] = health_message
-    session['alert'] = alert
-
-    # -------- SAVE TO CSV --------
-    filename = f"history_{session['user']}.csv"
-
-    with open(filename, "a", newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow([
-            datetime.now().strftime("%Y-%m-%d %H:%M"),
-            f"{score}/32",
-            result,
-            risk_percentage
-        ])
-
-    if score<=10:
-        color="green"
-    elif score<=20:
-        color="orange"
-    else:
-        color="red"
-
-    
-    # -------- SHOW RESULT --------
-    return render_template(
-        "result.html",
-        result=result,
-        score=score,
-        color=color,
-        reasons=reasons,
-        suggestions=suggestions,
-        health_message=health_message,
-        alert=alert,
-        risk_percentage=risk_percentage,
-        factor_score=factor_score,
-        features=features,
-        dates=dates,
-        scores=scores,
-        user=session['user'])
-    
+    except Exception as e:
+        return f"Error: {str(e)}"
 
 
 # ---------------- HISTORY PAGE ----------------
