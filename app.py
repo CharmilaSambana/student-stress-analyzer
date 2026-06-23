@@ -1,30 +1,19 @@
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
-from reportlab.lib.styles import getSampleStyleSheet
-from flask import send_file
-from flask import Flask, render_template, request,session,redirect
+from flask import Flask, render_template, request, session, redirect
 import csv
-from werkzeug.security import generate_password_hash,check_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from datetime import datetime
-import io
-
-
 
 app = Flask(__name__)
-app.secret_key="secret123"
+app.secret_key = "secret123"
 
+# ---------------- CREATE USERS CSV ----------------
 if not os.path.exists("users.csv"):
     with open("users.csv", "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(["username", "password"])
 
-# ---------------- CREATE CSV ONCE ----------------
-if not os.path.exists("history.csv"):
-    with open("history.csv", "w", newline="") as file:
-        writer = csv.writer(file)
-        writer.writerow(["Date", "Score", "Stress Level", "Risk %"])
-
-
+# ---------------- REGISTER ----------------
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -45,6 +34,8 @@ def register():
 
     return render_template('register.html')
 
+
+# ---------------- LOGIN ----------------
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -63,15 +54,25 @@ def login():
 
     return render_template('login.html')
 
+
+# ---------------- LOGOUT ----------------
 @app.route('/logout')
 def logout():
     session.pop('user', None)
     return redirect('/login')
 
 
+# ---------------- HOME ----------------
+@app.route('/')
+def home():
+    if 'user' not in session:
+        return redirect('/login')
+    return render_template("index.html", user=session['user'])
+
+
+# ---------------- RESULT PAGE ----------------
 @app.route('/result')
 def result_page():
-    
     if 'user' not in session:
         return redirect('/login')
 
@@ -82,21 +83,13 @@ def result_page():
         "result.html",
         result=session['result'],
         score=session['score'],
-        risk_percentage=session['risk'],
-        features=session['features'],
+        risk=session['risk'],
         color=session['color'],
         reasons=session['reasons'],
         suggestions=session['suggestions'],
         explanation=session['explanation'],
         user=session['user']
     )
-
-# ---------------- HOME PAGE ----------------
-@app.route('/')
-def home():
-    if 'user' not in session:
-        return redirect('/login')
-    return render_template("index.html",user=session['user'])
 
 
 # ---------------- PREDICT ----------------
@@ -106,188 +99,142 @@ def predict():
     if 'user' not in session:
         return redirect('/login')
 
-    try:
-        # 🔹 Get input values from form
-        sleep_hours = float(request.form['sleep_hours'])
-        study_hours = float(request.form['study_hours'])
-        social_support = float(request.form['social_support'])
+    # ✅ SAFE INPUT HANDLING (prevents 400 error)
+    sleep = int(request.form.get('sleep', 0))
+    study = int(request.form.get('study', 0))
+    exam = int(request.form.get('exam', 0))
+    workload = int(request.form.get('workload', 0))
+    concentration = int(request.form.get('concentration', 0))
+    screen = int(request.form.get('screen', 0))
+    physical = int(request.form.get('physical', 0))
+    sleep_quality = int(request.form.get('sleep_quality', 0))
+    emotional = int(request.form.get('emotional', 0))
+    routine = int(request.form.get('routine', 0))
+    breaks = int(request.form.get('breaks', 0))
+    support = int(request.form.get('support', 0))
 
-        # Add all your other inputs here if present
-        input_data = [sleep_hours, study_hours, social_support]
+    # -------- SCORE --------
+    score = sum([
+        sleep, study, exam, workload,
+        concentration, screen, physical,
+        sleep_quality, emotional, routine,
+        breaks, support
+    ])
 
-        # 🔹 ML Prediction
-        prediction = model.predict([input_data])[0]
+    if score > 32:
+        score = 32
 
-        # 🔹 Convert to Stress Level
-        if prediction == 0:
-            result = "Low"
-        elif prediction == 1:
-            result = "Moderate"
-        else:
-            result = "High"
+    # -------- STRESS LEVEL --------
+    if score <= 10:
+        result = "Low"
+        color = "green"
+    elif score <= 20:
+        result = "Moderate"
+        color = "orange"
+    else:
+        result = "High"
+        color = "red"
 
-        # 🔹 Risk Percentage (simple logic or use probability if available)
-        if result == "Low":
-            risk = "20%"
-        elif result == "Moderate":
-            risk = "50%"
-        else:
-            risk = "85%"
+    reasons = []
+    suggestions = []
 
-        # 🔹 Reasons (AI explanation)
-        reasons = []
+    # -------- FACTORS --------
+    if sleep >= 2:
+        reasons.append("Poor sleep pattern affecting mental health")
+        suggestions.append("Maintain 7-8 hours sleep daily")
 
-        if sleep_hours < 6:
-            reasons.append("Low sleep duration")
-        if study_hours > 8:
-            reasons.append("High academic workload")
-        if social_support < 3:
-            reasons.append("Low social interaction")
+    if study >= 2:
+        reasons.append("High study pressure")
+        suggestions.append("Use Pomodoro technique")
 
-        if not reasons:
-            reasons.append("Balanced lifestyle factors")
+    if exam >= 2:
+        reasons.append("Exam stress is high")
+        suggestions.append("Practice relaxation")
 
-        # 🔹 Suggestions (Healthcare Action)
-        if result == "Low":
-            suggestions = [
-                "Maintain your healthy routine",
-                "Keep a consistent sleep schedule",
-                "Stay physically active"
-            ]
+    if screen >= 2:
+        reasons.append("High screen time")
+        suggestions.append("Limit mobile usage")
 
-        elif result == "Moderate":
-            suggestions = [
-                "Take regular breaks during study",
-                "Practice breathing or meditation",
-                "Improve sleep quality",
-                "Talk with friends or family"
-            ]
+    if emotional >= 2:
+        reasons.append("High anxiety")
+        suggestions.append("Try meditation")
 
-        else:
-            suggestions = [
-                "Take immediate rest",
-                "Talk to a trusted person or mentor",
-                "Try relaxation techniques like meditation",
-                "Reduce workload temporarily",
-                "Seek professional help if needed"
-            ]
+    if len(reasons) == 0:
+        reasons.append("No major stress factors")
+        suggestions.append("Maintain your routine")
 
-        # 🔴 NEW: Health Message (Healthcare tone)
-        if result == "High":
-            health_message = "⚠️ Your stress level is critically high. Immediate attention is recommended to prevent serious mental health impact."
+    # -------- EXPLANATION --------
+    if result == "High":
+        explanation = "Your stress is high due to " + ", ".join(reasons[:2])
+    elif result == "Moderate":
+        explanation = "Your stress is moderate due to " + ", ".join(reasons[:2])
+    else:
+        explanation = "You are maintaining a healthy balance"
 
-        elif result == "Moderate":
-            health_message = "⚡ Your stress level is moderate. It is advisable to manage stress before it increases."
+    # -------- RISK --------
+    risk = round((score / 32) * 100, 2)
 
-        else:
-            health_message = "✅ Your mental health is stable. Keep maintaining your current lifestyle."
+    # -------- SAVE HISTORY --------
+    filename = f"history_{session['user']}.csv"
 
-        # 🔴 NEW: Alert system
-        alert = None
-        if result == "High":
-            alert = "🚨 High Stress Alert: Please take immediate action and consider talking to someone."
-
-        # 🔹 Smart Explanation
-        if result == "High":
-            explanation = "Based on your inputs, factors like " + ", ".join(reasons[:2]) + " are significantly contributing to high stress."
-
-        elif result == "Moderate":
-            explanation = "Your stress is influenced by " + ", ".join(reasons[:2]) + ". Early management is recommended."
-
-        else:
-            explanation = "Your responses indicate a balanced lifestyle with minimal stress risk."
-
-        # 🔹 Save to CSV (history)
-        import csv
-        from datetime import datetime
-
-        with open("history.csv", "a", newline="") as file:
+    if not os.path.exists(filename):
+        with open(filename, "w", newline="") as file:
             writer = csv.writer(file)
-            writer.writerow([
-                datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                prediction,
-                result,
-                risk
-            ])
+            writer.writerow(["Date", "Score", "Stress Level", "Risk %"])
 
-        # 🔹 Store in session
-        session['result'] = result
-        session['risk'] = risk
-        session['reasons'] = reasons
-        session['suggestions'] = suggestions
-        session['explanation'] = explanation
-        session['health_message'] = health_message
-        session['alert'] = alert
+    with open(filename, "a", newline="") as file:
+        writer = csv.writer(file)
+        writer.writerow([
+            datetime.now().strftime("%Y-%m-%d %H:%M"),
+            score,
+            result,
+            risk
+        ])
 
-        # 🔹 Send to frontend
-        return render_template(
-            "result.html",
-            result=result,
-            risk=risk,
-            reasons=reasons,
-            suggestions=suggestions,
-            explanation=explanation,
-            health_message=health_message,
-            alert=alert
-        )
+    # -------- STORE SESSION --------
+    session['result'] = result
+    session['score'] = score
+    session['risk'] = risk
+    session['color'] = color
+    session['reasons'] = reasons
+    session['suggestions'] = suggestions
+    session['explanation'] = explanation
 
-    except Exception as e:
-        return f"Error: {str(e)}"
+    return redirect('/result')
 
 
-# ---------------- HISTORY PAGE ----------------
+# ---------------- HISTORY ----------------
 @app.route('/history')
 def history():
+
     if 'user' not in session:
         return redirect('/login')
 
-    import os
+    filename = f"history_{session['user']}.csv"
 
     data = []
     dates = []
     scores = []
 
-    filename = f"history_{session['user']}.csv"
+    if os.path.exists(filename):
+        with open(filename, "r") as file:
+            reader = csv.reader(file)
+            next(reader, None)
 
-    # ✅ Create file if not exists (first time user)
-    if not os.path.exists(filename):
-        with open(filename, "w") as f:
-            pass
-
-    with open(filename, "r") as file:
-        reader = csv.reader(file)
-
-        next(reader, None)  # skip header if exists
-
-        for row in reader:
-
-            if len(row) < 2:
-                continue
-
-            try:
-                # if stored like "32/32"
-                score_value = int(row[1].split('/')[0])
-            except:
-                try:
-                    # if stored like "32"
-                    score_value = int(row[1])
-                except:
-                    continue
-
-            data.append(row)
-            dates.append(row[0])
-            scores.append(score_value)
+            for row in reader:
+                data.append(row)
+                dates.append(row[0])
+                scores.append(int(row[1]))
 
     return render_template(
         "history.html",
         data=data,
         dates=dates,
         scores=scores,
-        user=session['user']   # ✅ for welcome message
+        user=session['user']
     )
 
 
-
-# ---------------- RUN APP ----------------
+# ---------------- RUN ----------------
 if __name__ == "__main__":
     app.run(debug=True)
