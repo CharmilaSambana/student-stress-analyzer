@@ -1,141 +1,438 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Stress Result</title>
+    <title>Stress Analysis Result</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
 
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #667eea, #764ba2);
             margin: 0;
-            color: #333;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        /* ✅ TOP BAR MATCHING THEME */
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 25px;
+
+            background: linear-gradient(90deg, #667eea, #764ba2); /* SAME AS PAGE */
+            color: white;
+        }
+
+        .welcome {
+            font-size: 15px;
+        }
+
+        .username {
+            color: #ff7e5f;  /* 🔥 Orange like your image */
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background: linear-gradient(45deg, #ff4d4d, #ff0000);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .logout-btn:hover {
+            transform: scale(1.05);
         }
 
         .container {
-            max-width: 900px;
-            margin: auto;
+            max-width: 1000px;
+            margin: 20px auto;
             padding: 20px;
         }
 
-        h2 {
+        .title {
             text-align: center;
             color: white;
+            background: linear-gradient(90deg, #ff7e5f, #feb47b);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        /* CARDS */
+        .cards {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
         }
 
         .card {
+            flex: 1;
             background: white;
+            padding: 18px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+
+        .section {
+            background: white;
+            margin-top: 20px;
             padding: 20px;
             border-radius: 12px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
         }
 
-        .center {
-            text-align: center;
+        .chart-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
         }
 
-        .badge {
-            display: inline-block;
-            padding: 8px 16px;
-            border-radius: 20px;
-            color: white;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-
-        .low { background: #2ecc71; }
-        .moderate { background: #f39c12; }
-        .high { background: #e74c3c; }
-
-        ul {
-            padding-left: 20px;
-        }
-
-        li {
-            margin-bottom: 8px;
+        .chart-box {
+            width: 300px;
         }
 
         .btn {
             display: inline-block;
-            margin: 10px;
             padding: 10px 20px;
-            background: #ff7e5f;
-            color: white;
+            margin: 10px;
             border-radius: 6px;
+            color: white;
             text-decoration: none;
         }
 
-        .btn:hover {
-            opacity: 0.9;
+        .home { background: #ff7e5f; }
+        .history { background: #28a745; }
+        .pdf { background: #6a5acd; }
+
+        ul {
+            padding-left: 20px;
+        }
+        /* THANK YOU CARD */
+        .thank-container {
+            margin: 50px auto;
+            padding: 35px;
+            max-width: 700px;
+            text-align: center;
+
+            border-radius: 20px;
+
+    /* CHANGE HERE */
+            background: rgba(255, 255, 255, 0.9);
+
+            border: 1px solid rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+
+            color: #333; /* dark text */
         }
 
+/* ICON CIRCLE */
+        .thank-icon {
+            background: linear-gradient(135deg, #a855f7, #6366f1);
+            color: white;
+            font-size: 32px;
+            box-shadow: 0 5px 15px rgba(168,85,247,0.5);
+        }
+
+/* TITLE */
+        .thank-container h2 {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+/* DESCRIPTION */
+        .thank-container p {
+            color: #555;
+        }
+
+        .highlight-text {
+            background: #f1f5f9;
+            color: #333;
+        }
+
+        .footer-text {
+            color: #f59e0b;
+        }
+
+        .thank-container {
+            background: linear-gradient(135deg, #ffffff, #f8fafc);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+        }
+
+        .highlight-text {
+            background: linear-gradient(90deg, #dbeafe, #e0e7ff);
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+        .thank-container {
+            animation: fadeUp 0.8s ease;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .thank-container h2 {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .thank-container p {
+            font-size: 15px;
+        }
+
+        .thank-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+/* Bigger heart without white box */
+        .heart-circle {
+            font-size: 30px;   /* 💜 size increase */
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+
+            background: linear-gradient(135deg, #667eea, #764ba2);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            color: white;
+
+            margin: 0 auto 15px;
+
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+
+            transition: 0.3s;
+        }
+
+        .heart-circle:hover {
+            transform: scale(1.1);
+        }
     </style>
 </head>
 
 <body>
 
+<!-- ✅ TOP BAR -->
+<div class="topbar">
+    <div class="welcome">
+        👤 Welcome, <span class="username">{{ user }}</span>
+    </div>
+
+    <a href="/logout" class="logout-btn">Logout</a>
+</div>
+
 <div class="container">
 
-    <h2>🧠 Stress Analysis Result</h2>
+    <h2 class="title">🎓 Smart Student Stress Analyzer</h2>
 
-    <!-- RESULT -->
-    <div class="card center">
+    <!-- CARDS -->
+    <div class="cards">
 
-        <h3>Your Stress Level</h3>
+        <div class="card">
+            <h4 style="color:{{color}};">Stress Level</h4>
+            <p style="color:{{color}}; font-size:20px;">
+                {{ result }}
+            </p>
+        </div>
 
-        <span class="badge 
-            {% if result == 'Low' %}low
-            {% elif result == 'Moderate' %}moderate
-            {% else %}high
-            {% endif %}">
-            {{ result }}
-        </span>
+        <div class="card">
+            <h4 style="color:#007bff;">Score</h4>
+            <p style="color:#007bff;">
+                {{ score }}/32
+            </p>
+        </div>
 
-        <p style="margin-top:10px;">
-            <strong>Score:</strong> {{ score }} / 32
-        </p>
-
-        <p>
-            <strong>Risk:</strong> {{ risk }} %
-        </p>
+        <div class="card">
+            <h4 style="color:#e63946;">Risk %</h4>
+            <p style="color:#e63946;">
+                {{ risk_percentage }}%
+            </p>
+        </div>
 
     </div>
 
-    <!-- EXPLANATION -->
-    <div class="card">
-        <h3>🧠 AI Explanation</h3>
-        <p>{{ explanation }}</p>
+    <!-- CHARTS -->
+    <div class="section">
+        <h3 style="color:#8D8000;">📊 Visual Analysis</h3>
+
+        <div class="chart-container">
+
+            <div class="chart-box">
+                <canvas id="pieChart"></canvas>
+            </div>
+
+            <div class="chart-box">
+                <canvas id="barChart"></canvas>
+            </div>
+
+        </div>
     </div>
 
-    <!-- REASONS -->
-    <div class="card">
-        <h3>📌 Possible Reasons</h3>
+    <!-- FACTORS -->
+    <div class="section">
+        <h3 style="color:#e63946;">⚠ Key Factors</h3>
         <ul>
             {% for r in reasons %}
-            <li>{{ r }}</li>
+                <li>{{ r }}</li>
             {% endfor %}
         </ul>
     </div>
 
     <!-- SUGGESTIONS -->
-    <div class="card">
-        <h3>💡 Suggestions</h3>
+    <div class="section">
+        <h3 style="color:#008000;">💡 Recommendations</h3>
         <ul>
             {% for s in suggestions %}
-            <li>{{ s }}</li>
+                <li>{{ s }}</li>
             {% endfor %}
         </ul>
     </div>
 
+    <!-- AI -->
+    <div class="section">
+        <h3 style="color:#6a5acd;">🧠 AI Insight</h3>
+        <p>{{ explanation }}</p>
+    </div>
+
     <!-- BUTTONS -->
-    <div class="center">
-        <a href="/" class="btn">🏠 Home</a>
-        <a href="/history" class="btn">📊 View History</a>
+    <div style="text-align:center;">
+        <a href="/" class="btn home">🏠 Home</a>
+        <a href="/history" class="btn history">📈 History</a>
+        <button onclick="downloadPDF()" class="btn" style="background:#6a5acd;">
+        📄 Download PDF</button>
+    </div>
+    <!-- THANK YOU SECTION -->
+    <div class="thank-container">
+    
+    
+    <div class="thank-header">
+    <div class="heart-circle">💜</div>
+</div>
+    
+
+    <h2>Thank You! ✨</h2>
+
+    <p>
+        Thank you for taking the time to complete your stress assessment.<br>
+        Your responses help us provide personalized insights to improve your well-being.
+    </p>
+
+    <div class="highlight-text">
+        🌿 Small changes today, <b>better well-being tomorrow.</b>
+    </div>
+
+    <div class="footer-text">
+        ⭐ Take care and stay positive!
     </div>
 
 </div>
+</div>
+
+<!-- PIE -->
+<script>
+const score = {{ score }};
+const stress = (score / 32) * 100;
+const remain = 100 - stress;
+
+new Chart(document.getElementById('pieChart'), {
+    type: 'doughnut',
+    data: {
+        labels: ['Stress', 'Remaining'],
+        datasets: [{
+            data: [stress, remain],
+            backgroundColor: ['#ff4d4d', '#4CAF50']
+        }]
+    }
+});
+</script>
+
+<!-- BAR -->
+<script>
+new Chart(document.getElementById('barChart'), {
+    type: 'bar',
+    data: {
+        labels: ["Sleep","Study","Exam","Workload","Focus","Screen","Physical","SleepQ","Emotion","Routine","Breaks","Support"],
+        datasets: [{
+            label: "Input Analysis",
+            data: {{ features | tojson }},
+            backgroundColor: '#667eea'
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 3
+            }
+        }
+    }
+});
+</script>
+
+<!-- PDF LIBRARIES -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+async function downloadPDF() {
+
+    const { jsPDF } = window.jspdf;
+
+    // capture only result area
+    const element = document.querySelector(".container");
+
+    const canvas = await html2canvas(element, {
+        scale: 2,   // HD quality
+        useCORS: true
+    });
+
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF("p", "mm", "a4");
+
+    const pageWidth = 210;
+    const pageHeight = 297;
+
+    const imgWidth = pageWidth;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    let heightLeft = imgHeight;
+    let position = 0;
+
+    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    // 🔥 MULTI PAGE SUPPORT
+    while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+    }
+
+    pdf.save("Stress_Report.pdf");
+}
+</script>
+
 
 </body>
 </html>
