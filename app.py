@@ -86,18 +86,18 @@ def result_page():
         return redirect('/')
 
     return render_template(
-        "result.html",
-        result=session['result'],
-        score=session['score'],
-        risk_percentage=session['risk'],
-        features=session['features'],
-        color=session['color'],
-        reasons=session['reasons'],
-        suggestions=session['suggestions'],
-        explanation=session['explanation'],
-        user=session['user']
-    )
-
+    "result.html",
+    result=session.get('result'),
+    score=session.get('score', 0),
+    risk_percentage=session.get('risk', 0),
+    features=session.get('features', []),
+    color=session.get('color', 'black'),
+    reasons=session.get('reasons', []),
+    suggestions=session.get('suggestions', []),
+    explanation=session.get('explanation', ''),
+    user=session.get('user')
+     )
+    
 # -------- PREDICT --------
 @app.route('/predict', methods=['POST'])
 def predict():
