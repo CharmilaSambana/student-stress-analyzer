@@ -199,8 +199,21 @@ def predict():
     session['reasons'] = reasons
     session['suggestions'] = suggestions
     session['explanation'] = explanation
-
-    return redirect('/result')
+    session['features'] = features
+    
+    
+    return render_template(
+    "result.html",
+    result=session['result'],
+    score=session['score'],
+    risk=session['risk'],
+    color=session['color'],
+    reasons=session['reasons'],
+    suggestions=session['suggestions'],
+    explanation=session['explanation'],
+    features=session['features'],   # 🔥 ADD THIS
+    user=session['user']
+       )
 
 
 # ---------------- HISTORY ----------------
