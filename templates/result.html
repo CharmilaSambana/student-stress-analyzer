@@ -14,14 +14,12 @@
             background: linear-gradient(135deg, #667eea, #764ba2);
         }
 
-        /* ✅ TOP BAR MATCHING THEME */
         .topbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 12px 25px;
-
-            background: linear-gradient(90deg, #667eea, #764ba2); /* SAME AS PAGE */
+            background: linear-gradient(90deg, #667eea, #764ba2);
             color: white;
         }
 
@@ -30,7 +28,7 @@
         }
 
         .username {
-            color: #ff7e5f;  /* 🔥 Orange like your image */
+            color: #ff7e5f;
             font-weight: 600;
         }
 
@@ -41,11 +39,6 @@
             border-radius: 20px;
             text-decoration: none;
             font-size: 14px;
-            transition: 0.3s;
-        }
-
-        .logout-btn:hover {
-            transform: scale(1.05);
         }
 
         .container {
@@ -62,7 +55,6 @@
             border-radius: 10px;
         }
 
-        /* CARDS */
         .cards {
             display: flex;
             gap: 15px;
@@ -108,130 +100,40 @@
 
         .home { background: #ff7e5f; }
         .history { background: #28a745; }
-        .pdf { background: #6a5acd; }
 
         ul {
             padding-left: 20px;
         }
-        /* THANK YOU CARD */
+
         .thank-container {
             margin: 50px auto;
             padding: 35px;
             max-width: 700px;
             text-align: center;
-
             border-radius: 20px;
-
-    /* CHANGE HERE */
             background: rgba(255, 255, 255, 0.9);
-
-            border: 1px solid rgba(0,0,0,0.1);
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-
-            color: #333; /* dark text */
-        }
-
-/* ICON CIRCLE */
-        .thank-icon {
-            background: linear-gradient(135deg, #a855f7, #6366f1);
-            color: white;
-            font-size: 32px;
-            box-shadow: 0 5px 15px rgba(168,85,247,0.5);
-        }
-
-/* TITLE */
-        .thank-container h2 {
-            font-size: 30px;
-            margin-bottom: 10px;
-        }
-
-/* DESCRIPTION */
-        .thank-container p {
-            color: #555;
-        }
-
-        .highlight-text {
-            background: #f1f5f9;
             color: #333;
         }
 
-        .footer-text {
-            color: #f59e0b;
-        }
-
-        .thank-container {
-            background: linear-gradient(135deg, #ffffff, #f8fafc);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
-        }
-
-        .highlight-text {
-            background: linear-gradient(90deg, #dbeafe, #e0e7ff);
-            color: #1e293b;
-            font-weight: 500;
-        }
-
-        .thank-container {
-            animation: fadeUp 0.8s ease;
-        }
-
-        @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .thank-container h2 {
-            font-size: 32px;
-            font-weight: 700;
-        }
-
-        .thank-container p {
-            font-size: 15px;
-        }
-
-        .thank-header {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-/* Bigger heart without white box */
         .heart-circle {
-            font-size: 30px;   /* 💜 size increase */
+            font-size: 30px;
             width: 70px;
             height: 70px;
             border-radius: 50%;
-
             background: linear-gradient(135deg, #667eea, #764ba2);
-
             display: flex;
             align-items: center;
             justify-content: center;
-
             color: white;
-
             margin: 0 auto 15px;
-
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-
-            transition: 0.3s;
         }
 
-        .heart-circle:hover {
-            transform: scale(1.1);
-        }
     </style>
 </head>
 
 <body>
 
-<!-- ✅ TOP BAR -->
 <div class="topbar">
     <div class="welcome">
         👤 Welcome, <span class="username">{{ user }}</span>
@@ -244,7 +146,6 @@
 
     <h2 class="title">🎓 Smart Student Stress Analyzer</h2>
 
-    <!-- CARDS -->
     <div class="cards">
 
         <div class="card">
@@ -264,18 +165,16 @@
         <div class="card">
             <h4 style="color:#e63946;">Risk %</h4>
             <p style="color:#e63946;">
-                {{ risk }}%
+                {{ risk_percentage }}%
             </p>
         </div>
 
     </div>
 
-    <!-- CHARTS -->
     <div class="section">
-        <h3 style="color:#8D8000;">📊 Visual Analysis</h3>
+        <h3>📊 Visual Analysis</h3>
 
         <div class="chart-container">
-
             <div class="chart-box">
                 <canvas id="pieChart"></canvas>
             </div>
@@ -283,13 +182,11 @@
             <div class="chart-box">
                 <canvas id="barChart"></canvas>
             </div>
-
         </div>
     </div>
 
-    <!-- FACTORS -->
     <div class="section">
-        <h3 style="color:#e63946;">⚠ Key Factors</h3>
+        <h3>⚠ Key Factors</h3>
         <ul>
             {% for r in reasons %}
                 <li>{{ r }}</li>
@@ -297,9 +194,8 @@
         </ul>
     </div>
 
-    <!-- SUGGESTIONS -->
     <div class="section">
-        <h3 style="color:#008000;">💡 Recommendations</h3>
+        <h3>💡 Recommendations</h3>
         <ul>
             {% for s in suggestions %}
                 <li>{{ s }}</li>
@@ -307,47 +203,32 @@
         </ul>
     </div>
 
-    <!-- AI -->
     <div class="section">
-        <h3 style="color:#6a5acd;">🧠 AI Insight</h3>
+        <h3>🧠 AI Insight</h3>
         <p>{{ explanation }}</p>
     </div>
 
-    <!-- BUTTONS -->
     <div style="text-align:center;">
         <a href="/" class="btn home">🏠 Home</a>
         <a href="/history" class="btn history">📈 History</a>
         <button onclick="downloadPDF()" class="btn" style="background:#6a5acd;">
-        📄 Download PDF</button>
+            📄 Download PDF
+        </button>
     </div>
-    <!-- THANK YOU SECTION -->
+
     <div class="thank-container">
-    
-    
-    <div class="thank-header">
-    <div class="heart-circle">💜</div>
-</div>
-    
+        <div class="heart-circle">💜</div>
 
-    <h2>Thank You! ✨</h2>
+        <h2>Thank You! ✨</h2>
 
-    <p>
-        Thank you for taking the time to complete your stress assessment.<br>
-        Your responses help us provide personalized insights to improve your well-being.
-    </p>
-
-    <div class="highlight-text">
-        🌿 Small changes today, <b>better well-being tomorrow.</b>
-    </div>
-
-    <div class="footer-text">
-        ⭐ Take care and stay positive!
+        <p>
+            Thank you for completing your stress assessment.
+            Your responses help improve your well-being.
+        </p>
     </div>
 
 </div>
-</div>
 
-<!-- PIE -->
 <script>
 const score = {{ score }};
 const stress = (score / 32) * 100;
@@ -363,76 +244,18 @@ new Chart(document.getElementById('pieChart'), {
         }]
     }
 });
-</script>
 
-<!-- BAR -->
-<script>
 new Chart(document.getElementById('barChart'), {
     type: 'bar',
     data: {
         labels: ["Sleep","Study","Exam","Workload","Focus","Screen","Physical","SleepQ","Emotion","Routine","Breaks","Support"],
         datasets: [{
-            label: "Input Analysis",
             data: {{ features | tojson }},
             backgroundColor: '#667eea'
         }]
-    },
-    options: {
-        scales: {
-            y: {
-                beginAtZero: true,
-                max: 3
-            }
-        }
     }
 });
 </script>
-
-<!-- PDF LIBRARIES -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<script>
-async function downloadPDF() {
-
-    const { jsPDF } = window.jspdf;
-
-    // capture only result area
-    const element = document.querySelector(".container");
-
-    const canvas = await html2canvas(element, {
-        scale: 2,   // HD quality
-        useCORS: true
-    });
-
-    const imgData = canvas.toDataURL("image/png");
-
-    const pdf = new jsPDF("p", "mm", "a4");
-
-    const pageWidth = 210;
-    const pageHeight = 297;
-
-    const imgWidth = pageWidth;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-    let heightLeft = imgHeight;
-    let position = 0;
-
-    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
-
-    // 🔥 MULTI PAGE SUPPORT
-    while (heightLeft > 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-    }
-
-    pdf.save("Stress_Report.pdf");
-}
-</script>
-
 
 </body>
 </html>
