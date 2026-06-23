@@ -3,6 +3,17 @@
 <head>
     <title>Stress Analysis Result</title>
 
+
+    {% if reasons %}
+    <ul>
+    {% for r in reasons %}
+    <li>{{ r }}</li>
+    {% endfor %}
+    </ul>
+    {% else %}
+    <p>No issues detected</p>
+    {% endif %}
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
@@ -234,31 +245,51 @@
 </div>
 
 <script>
-const score = {{ score }};
+const score = {{ score | default(0) }};
 const stress = (score / 32) * 100;
 const remain = 100 - stress;
 
-new Chart(document.getElementById('pieChart'), {
-    type: 'doughnut',
-    data: {
-        labels: ['Stress', 'Remaining'],
-        datasets: [{
-            data: [stress, remain],
-            backgroundColor: ['#ff4d4d', '#4CAF50']
-        }]
-    }
-});
+const pieCanvas = document.getElementById('pieChart');
 
-new Chart(document.getElementById('barChart'), {
-    type: 'bar',
-    data: {
-        labels: ["Sleep","Study","Exam","Workload","Focus","Screen","Physical","SleepQ","Emotion","Routine","Breaks","Support"],
-        datasets: [{
-            data: {{ features | tojson }},
-            backgroundColor: '#667eea'
-        }]
-    }
-});
+if (pieCanvas) {
+    new Chart(pieCanvas, {
+        type: 'doughnut',
+        data: {
+            labels: ['Stress', 'Remaining'],
+            datasets: [{
+                data: [stress, remain],
+                backgroundColor: ['#ff4d4d', '#4CAF50']
+            }]
+        }
+    });
+}
+
+
+const features = {{ features | tojson | safe }};
+
+const barCanvas = document.getElementById('barChart');
+
+if (barCanvas && features.length > 0) {
+    new Chart(barCanvas, {
+        type: 'bar',
+        data: {
+            labels: ["Sleep","Study","Exam","Workload","Focus","Screen","Physical","SleepQ","Emotion","Routine","Breaks","Support"],
+            datasets: [{
+                label: "Input Analysis",
+                data: features,
+                backgroundColor: '#667eea'
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 3
+                }
+            }
+        }
+    });
+}
 
 async function downloadPDF() {
 
