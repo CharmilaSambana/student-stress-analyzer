@@ -3,7 +3,11 @@
 <head>
     <title>Stress Analysis Result</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+         window.jsPDF = window.jspdf.jsPDF;
+    </script>
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
 
@@ -142,7 +146,7 @@
     <a href="/logout" class="logout-btn">Logout</a>
 </div>
 
-<div class="container">
+<div class="container" id="report">
 
     <h2 class="title">🎓 Smart Student Stress Analyzer</h2>
 
@@ -258,42 +262,67 @@ new Chart(document.getElementById('barChart'), {
 
 async function downloadPDF() {
 
-    const { jsPDF } = window.jspdf;
+    try {
 
-    await new Promise(resolve => setTimeout(resolve, 1000)); // 🔥 fix charts
+        // ✅ Check libraries
+        if (typeof html2canvas === "undefined") {
+            alert("html2canvas not loaded");
+            return;
+        }
 
-    const element = document.getElementById("report");
+        if (!window.jspdf) {
+            alert("jsPDF not loaded");
+            return;
+        }
 
-    const canvas = await html2canvas(element, {
-        scale: 3,
-        useCORS: true,
-        scrollY: -window.scrollY
-    });
+        const { jsPDF } = window.jspdf;
 
-    const imgData = canvas.toDataURL("image/png");
+        // ✅ Wait for charts to render (VERY IMPORTANT)
+        await new Promise(resolve => setTimeout(resolve, 1000));
 
-    const pdf = new jsPDF("p", "mm", "a4");
+        // ✅ Select full report
+        const element = document.getElementById("report") || document.querySelector(".container");
 
-    const pageWidth = 210;
-    const pageHeight = 297;
+        // ✅ Capture UI
+        const canvas = await html2canvas(element, {
+            scale: 3,              // 🔥 High quality
+            useCORS: true,
+            scrollY: -window.scrollY
+        });
 
-    const imgWidth = pageWidth;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        const imgData = canvas.toDataURL("image/png");
 
-    let heightLeft = imgHeight;
-    let position = 0;
+        // ✅ Create PDF
+        const pdf = new jsPDF("p", "mm", "a4");
 
-    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
+        const pageWidth = 210;
+        const pageHeight = 297;
 
-    while (heightLeft > 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
+        const imgWidth = pageWidth;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        let heightLeft = imgHeight;
+        let position = 0;
+
+        // ✅ First page
         pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
         heightLeft -= pageHeight;
-    }
 
-    pdf.save("Stress_Report.pdf");
+        // ✅ Multi-page support
+        while (heightLeft > 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+        }
+
+        // ✅ Download
+        pdf.save("Stress_Report.pdf");
+
+    } catch (error) {
+        console.error(error);
+        alert("Error generating PDF. Check console.");
+    }
 }
 </script>
 
