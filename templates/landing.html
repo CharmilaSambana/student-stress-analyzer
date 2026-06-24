@@ -2,7 +2,7 @@
 
 <html>
 <head>
-    <title>Student Stress Analyzer</title>
+    <title>Stress Analyzer</title>
 
 ```
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
@@ -19,8 +19,9 @@
     .navbar {
         display: flex;
         justify-content: space-between;
-        padding: 15px 40px;
         align-items: center;
+        padding: 15px 40px;
+        backdrop-filter: blur(10px);
     }
 
     .logo {
@@ -33,34 +34,46 @@
         padding: 8px 18px;
         border-radius: 20px;
         text-decoration: none;
-        color: white;
         font-size: 14px;
+        transition: 0.3s;
     }
 
     .login {
         border: 1px solid white;
+        color: white;
+    }
+
+    .login:hover {
+        background: white;
+        color: #333;
     }
 
     .register {
         background: #ff7e5f;
+        color: white;
     }
 
-    /* HERO SECTION */
+    .register:hover {
+        transform: scale(1.05);
+    }
+
+    /* HERO */
     .hero {
         text-align: center;
-        margin-top: 100px;
+        margin-top: 90px;
         padding: 20px;
+        animation: fadeUp 1s ease;
     }
 
     .hero h1 {
-        font-size: 40px;
-        margin-bottom: 15px;
+        font-size: 45px;
+        margin-bottom: 10px;
     }
 
     .hero p {
         font-size: 18px;
         color: #ddd;
-        max-width: 600px;
+        max-width: 650px;
         margin: auto;
     }
 
@@ -69,43 +82,98 @@
     }
 
     .hero-buttons a {
-        padding: 12px 25px;
+        padding: 12px 28px;
         margin: 10px;
-        border-radius: 25px;
+        border-radius: 30px;
         text-decoration: none;
-        color: white;
         font-size: 15px;
+        transition: 0.3s;
     }
 
     .start {
         background: #ff7e5f;
+        color: white;
     }
 
-    .learn {
+    .start:hover {
+        transform: translateY(-3px);
+    }
+
+    .login-btn {
         border: 1px solid white;
+        color: white;
+    }
+
+    .login-btn:hover {
+        background: white;
+        color: #333;
     }
 
     /* FEATURES */
     .features {
         display: flex;
         justify-content: center;
-        gap: 20px;
+        gap: 25px;
         margin-top: 80px;
         padding: 20px;
+        flex-wrap: wrap;
     }
 
     .card {
-        background: white;
-        color: #333;
-        padding: 20px;
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(10px);
+        padding: 25px;
         border-radius: 15px;
-        width: 250px;
+        width: 260px;
         text-align: center;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        transition: 0.3s;
+    }
+
+    .card:hover {
+        transform: translateY(-8px);
+        background: rgba(255,255,255,0.25);
     }
 
     .card h3 {
         margin-bottom: 10px;
+    }
+
+    .card p {
+        color: #eee;
+        font-size: 14px;
+    }
+
+    /* FOOTER */
+    .footer {
+        text-align: center;
+        margin-top: 80px;
+        padding: 20px;
+        font-size: 14px;
+        color: #ddd;
+    }
+
+    /* ANIMATION */
+    @keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* RESPONSIVE */
+    @media(max-width: 768px) {
+        .hero h1 {
+            font-size: 30px;
+        }
+
+        .features {
+            flex-direction: column;
+            align-items: center;
+        }
     }
 
 </style>
@@ -132,16 +200,16 @@
 <!-- HERO -->
 
 <div class="hero">
-    <h1>Understand Your Stress. Improve Your Life.</h1>
+    <h1>Track Your Stress.<br>Transform Your Life.</h1>
 
 ```
 <p>
-    Smart Student Stress Analyzer helps you track, analyze, and improve your mental well-being using intelligent insights and visual analytics.
+    A smart student-focused stress analysis system that helps you understand your mental health using data, insights, and AI-powered suggestions.
 </p>
 
 <div class="hero-buttons">
     <a href="/register" class="start">🚀 Get Started</a>
-    <a href="/login" class="learn">🔍 Already have account</a>
+    <a href="/login" class="login-btn">🔑 Login</a>
 </div>
 ```
 
@@ -153,21 +221,27 @@
 
 ```
 <div class="card">
-    <h3>📊 Smart Analysis</h3>
-    <p>Get instant stress level insights based on your lifestyle inputs.</p>
+    <h3>📊 Smart Analytics</h3>
+    <p>Instantly analyze your stress level based on lifestyle patterns.</p>
 </div>
 
 <div class="card">
     <h3>📈 Visual Reports</h3>
-    <p>Understand your stress with charts and analytics.</p>
+    <p>Beautiful charts and insights to understand your mental health.</p>
 </div>
 
 <div class="card">
-    <h3>🧠 AI Suggestions</h3>
-    <p>Receive personalized health recommendations.</p>
+    <h3>🧠 AI Recommendations</h3>
+    <p>Personalized suggestions to improve your well-being.</p>
 </div>
 ```
 
+</div>
+
+<!-- FOOTER -->
+
+<div class="footer">
+    © 2026 Stress Analyzer | Built for Students 💜
 </div>
 
 </body>
