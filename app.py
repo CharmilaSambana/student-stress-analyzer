@@ -140,19 +140,78 @@ def predict():
     reasons = []
     suggestions = []
 
+# 😴 Sleep
     if sleep >= 2:
-        reasons.append("Poor sleep pattern affecting mental health")
-        suggestions.append("Maintain 7-8 hours sleep daily")
+        reasons.append("Poor sleep duration affecting brain recovery")
+        suggestions.append("Maintain consistent 7–8 hours sleep schedule")
 
+# 📚 Study Pressure
     if study >= 2:
-        reasons.append("High study pressure increases stress")
-        suggestions.append("Use Pomodoro technique")
+        reasons.append("High study pressure causing mental fatigue")
+        suggestions.append("Use Pomodoro technique (25 min focus + 5 min break)")
 
+# 📝 Exams
+    if exam >= 2:
+        reasons.append("Exam anxiety increasing stress levels")
+        suggestions.append("Practice mock tests & breathing exercises")
+
+# 📦 Workload
+    if workload >= 2:
+        reasons.append("Heavy workload causing burnout risk")
+        suggestions.append("Break tasks into smaller manageable goals")
+
+# 🎯 Concentration
+    if concentration >= 2:
+        reasons.append("Low concentration affecting productivity")
+        suggestions.append("Avoid distractions & use focus apps")
+
+# 📱 Screen Time
+    if screen >= 2:
+        reasons.append("Excess screen time causing mental strain")
+        suggestions.append("Limit screen usage & follow 20-20-20 rule")
+
+# 🏃 Physical Activity
+    if physical >= 2:
+        reasons.append("Lack of physical activity reducing energy levels")
+        suggestions.append("Do at least 30 mins exercise daily")
+
+# 🛌 Sleep Quality
+    if sleep_quality >= 2:
+        reasons.append("Poor sleep quality affecting mood & focus")
+        suggestions.append("Avoid mobile before sleep")
+
+# 😔 Emotional Health
+    if emotional >= 2:
+        reasons.append("Emotional imbalance increasing stress")
+        suggestions.append("Talk to friends/family or journal feelings")
+
+# 🔄 Routine
+    if routine >= 2:
+        reasons.append("Irregular daily routine causing instability")
+        suggestions.append("Maintain a fixed daily schedule")
+
+# ☕ Breaks
+    if breaks >= 2:
+        reasons.append("Lack of breaks leading to burnout")
+        suggestions.append("Take short breaks between tasks")
+
+# 🤝 Support
+    if support >= 2:
+        reasons.append("Lack of support system increasing pressure")
+        suggestions.append("Seek help from mentors or friends")
+
+# ✅ Default case
     if len(reasons) == 0:
-        reasons.append("No major stress factors detected")
-        suggestions.append("Maintain healthy routine")
+        reasons.append("You are maintaining a healthy lifestyle")
+        suggestions.append("Keep up your good habits!")
 
-    explanation = "Basic stress analysis based on your inputs."
+# 🧠 SMART AI INSIGHT (DYNAMIC)
+    if score <= 10:
+        explanation = "You are currently managing stress well. Keep maintaining a balanced lifestyle."
+    elif score <= 20:
+        explanation = "You are experiencing moderate stress. Improving routine, sleep, and focus can help reduce it."
+    else:
+        explanation = "You are under high stress. Immediate lifestyle changes and support are strongly recommended."
 
     risk_percentage = round((score / 32) * 100, 2)
 
