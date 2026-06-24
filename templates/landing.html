@@ -141,6 +141,22 @@ color:#ccc;
 font-size:14px;
 }
 
+/* LOGO STYLE */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo-icon {
+    font-size: 22px;
+}
+
+.logo-text {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
 </style>
 </head>
 
@@ -148,7 +164,10 @@ font-size:14px;
 
 <!-- NAVBAR -->
 <div class="navbar">
-<div class="logo">🎓 Stress Analyzer</div>
+<div class="logo">
+    <span class="logo-icon">🧠</span>
+    <span class="logo-text">MindCare AI</span>
+</div>
 
 <div class="nav-buttons">
 <a href="/login" class="login">Login</a>
