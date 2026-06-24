@@ -159,7 +159,12 @@ def predict():
     session['result'] = result
     session['score'] = score
     session['risk'] = risk_percentage
-    session['features'] = []
+    session['features'] = [
+    sleep, study, exam, workload,
+    concentration, screen, physical,
+    sleep_quality, emotional, routine,
+    breaks, support
+    ]
     session['color'] = color
     session['reasons'] = reasons
     session['suggestions'] = suggestions
@@ -174,7 +179,7 @@ def predict():
         suggestions=suggestions,
         explanation=explanation,
         risk_percentage=risk_percentage,
-        features=[],
+        features=session['features'],
         user=session['user']
     )
 
