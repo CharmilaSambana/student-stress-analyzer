@@ -71,10 +71,15 @@ def logout():
 
 # -------- HOME --------
 @app.route('/')
-def home():
+def landing():
+    return render_template("landing.html")
+
+@app.route('/dashboard')
+def dashboard():
     if 'user' not in session:
         return redirect('/login')
     return render_template("index.html", user=session['user'])
+
 
 # -------- RESULT PAGE --------
 @app.route('/result')
@@ -83,7 +88,7 @@ def result_page():
         return redirect('/login')
 
     if 'result' not in session:
-        return redirect('/')
+        return redirect('/dashboard')
 
     return render_template(
     "result.html",
