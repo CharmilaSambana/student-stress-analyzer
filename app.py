@@ -71,7 +71,9 @@ def logout():
 
 # -------- HOME --------
 @app.route('/')
-def landing():
+def home():
+    if 'user' in session:
+        return render_template("dashboard.html", user=session['user'])
     return render_template("landing.html")
 
 @app.route('/dashboard')
