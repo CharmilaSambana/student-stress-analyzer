@@ -2,18 +2,8 @@
 <html>
 <head>
     <title>Stress Analysis Result</title>
-
-
-    {% if reasons %}
-    <ul>
-    {% for r in reasons %}
-    <li>{{ r }}</li>
-    {% endfor %}
-    </ul>
-    {% else %}
-    <p>No issues detected</p>
-    {% endif %}
-    
+    <script>window.jsPDF = window.jspdf.jsPDF;</script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
@@ -203,9 +193,11 @@
     <div class="section">
         <h3>⚠ Key Factors</h3>
         <ul>
-            {% for r in reasons %}
-                <li>{{ r }}</li>
-            {% endfor %}
+            {% if reasons %}
+                {% for r in reasons %}
+                    <li>{{ r }}</li>
+                {% endfor %}
+            {% endif %}
         </ul>
     </div>
 
@@ -265,7 +257,7 @@ if (pieCanvas) {
 }
 
 
-const features = {{ features | tojson | safe }};
+const features = {{ features | default([]) | tojson | safe }};
 
 const barCanvas = document.getElementById('barChart');
 
@@ -309,7 +301,7 @@ async function downloadPDF() {
         const { jsPDF } = window.jspdf;
 
         // ✅ Wait for charts to render (VERY IMPORTANT)
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 1500));
 
         // ✅ Select full report
         const element = document.getElementById("report") || document.querySelector(".container");
