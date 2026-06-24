@@ -134,6 +134,21 @@
             margin: 0 auto 15px;
         }
 
+        .section ul li {
+            margin-bottom: 8px;
+            font-size: 15px;
+            padding-left: 5px;
+        }
+
+/* Key Factors - RED tone */
+        .section:nth-of-type(2) ul li {
+            color: #d62828;
+        }
+
+/* Recommendations - GREEN tone */
+        .section:nth-of-type(3) ul li {
+            color: #2a9d8f;
+        }
     </style>
 </head>
 
@@ -177,7 +192,7 @@
     </div>
 
     <div class="section">
-        <h3>📊 Visual Analysis</h3>
+        <h3 style="color:#6a5acd;">📊 Visual Analysis</h3>
 
         <div class="chart-container">
             <div class="chart-box">
@@ -191,7 +206,7 @@
     </div>
 
     <div class="section">
-        <h3>⚠ Key Factors</h3>
+        <h3 style="color:#e63946;">⚠ Key Factors</h3>
         <ul>
             {% if reasons %}
                 {% for r in reasons %}
@@ -202,7 +217,7 @@
     </div>
 
     <div class="section">
-        <h3>💡 Recommendations</h3>
+        <h3 style="color:#2a9d8f;">💡 Recommendations</h3>
         <ul>
             {% for s in suggestions %}
                 <li>{{ s }}</li>
@@ -211,7 +226,7 @@
     </div>
 
     <div class="section">
-        <h3>🧠 AI Insight</h3>
+        <h3 style="color:#264653;">🧠 AI Insight</h3>
         <p>{{ explanation }}</p>
     </div>
 
@@ -250,7 +265,7 @@ if (pieCanvas) {
             labels: ['Stress', 'Remaining'],
             datasets: [{
                 data: [stress, remain],
-                backgroundColor: ['#ff4d4d', '#4CAF50']
+                backgroundColor: ['#e63946', '#2a9d8f']
             }]
         }
     });
@@ -269,7 +284,7 @@ if (barCanvas && features.length > 0) {
             datasets: [{
                 label: "Input Analysis",
                 data: features,
-                backgroundColor: '#667eea'
+                backgroundColor: '#6a5acd'
             }]
         },
         options: {
