@@ -229,6 +229,25 @@ def predict():
     session['suggestions'] = suggestions
     session['explanation'] = explanation
 
+    # -------- SAVE HISTORY --------
+    filename = f"history_{session['user']}.csv"
+
+    file_exists = os.path.exists(filename)
+
+    with open(filename, "a", newline="") as file:
+        writer = csv.writer(file)
+
+    # Write header if file is new
+        if not file_exists:
+            writer.writerow(["Date", "Score", "Stress Level", "Risk %"])
+
+        writer.writerow([
+        datetime.now().strftime("%Y-%m-%d %H:%M"),
+        f"{score}/32",
+        result,
+        f"{risk_percentage}%"
+        ])
+
     return render_template(
         "result.html",
         result=result,
