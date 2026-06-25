@@ -110,6 +110,16 @@ font-size:22px;
 margin-bottom:10px;
 }
 
+a {
+    position: relative;
+    z-index: 100;
+    cursor: pointer;
+}
+
+.box {
+    position: relative;
+    z-index: 1;
+}
 </style>
 </head>
 
@@ -134,7 +144,12 @@ margin-bottom:10px;
 
 </form>
 
-<p>Already have an account? <a href="/login">Login</a></p>
+<p style="margin-top:15px;">
+    Already have an account? 
+    <a href="/login" style="color:#00f2fe; font-weight:600;">
+        Login
+    </a>
+</p>
 
 </div>
 
