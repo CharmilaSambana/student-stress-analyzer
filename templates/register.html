@@ -15,12 +15,13 @@ box-sizing:border-box;
 font-family:'Poppins',sans-serif;
 }
 
-body{
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-background: linear-gradient(135deg,#11998e,#38ef7d);
+body {
+    font-family: 'Segoe UI';
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
 /* GLASS CARD */
@@ -41,6 +42,7 @@ color:white;
 h2{
 margin-bottom:10px;
 font-weight:600;
+color: #764ba2;
 }
 
 .sub{
@@ -67,23 +69,19 @@ color:#eee;
 }
 
 /* BUTTON */
-button{
-width:100%;
-padding:12px;
-margin-top:10px;
-border:none;
-border-radius:25px;
-
-background: linear-gradient(90deg,#ff7e5f,#feb47b);
-color:white;
-font-size:15px;
-cursor:pointer;
-
-transition:0.3s;
+button {
+    background: linear-gradient(45deg, #ff7e5f, #feb47b);
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    width: 95%;
+    cursor: pointer;
+    transition: 0.3s;
 }
-
-button:hover{
-transform:scale(1.05);
+  
+button:hover {
+    transform: scale(1.05);
 }
 
 /* LINK */
@@ -106,6 +104,11 @@ text-decoration:underline;
 .logo{
 font-size:22px;
 margin-bottom:10px;
+}
+
+.box {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
 }
 
 </style>
