@@ -104,7 +104,12 @@ def result_page():
     explanation=session.get('explanation', ''),
     user=session.get('user')
      )
-    
+if score <= 10:
+    badge = "🟢 Calm Mind"
+elif score <= 20:
+    badge = "🟡 Under Pressure"
+else:
+    badge = "🔴 High Alert"
 # -------- PREDICT --------
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -213,12 +218,30 @@ def predict():
         suggestions.append("Keep up your good habits!")
 
 # 🧠 SMART AI INSIGHT (DYNAMIC)
-    if score <= 10:
-        explanation = "You are currently managing stress well. Keep maintaining a balanced lifestyle."
-    elif score <= 20:
-        explanation = "You are experiencing moderate stress. Improving routine, sleep, and focus can help reduce it."
+    insights = []
+
+    if sleep >= 2:
+        insights.append("Your sleep cycle is a major contributor to stress.")
+
+    if screen >= 2:
+        insights.append("High screen time is affecting mental clarity.")
+
+    if emotional >= 2:
+        insights.append("Emotional health needs attention.")
+
+    if len(insights) == 0:
+        insights.append("You are maintaining a healthy balance across factors.")
+
+# Combine insight
+    explanation = " ".join(insights)
+
+# Add severity tone
+    if score > 20:
+        explanation += " Immediate action is recommended."
+    elif score > 10:
+        explanation += " Some improvements can significantly reduce stress."
     else:
-        explanation = "You are under high stress. Immediate lifestyle changes and support are strongly recommended."
+        explanation += " Keep maintaining your current lifestyle."
 
     risk_percentage = round((score / 32) * 100, 2)
 
@@ -235,6 +258,9 @@ def predict():
     session['reasons'] = reasons
     session['suggestions'] = suggestions
     session['explanation'] = explanation
+    session['badge'] = badge
+    improvement_score = 100 - risk_percentage
+    session['improvement'] = improvement_score
 
     # -------- SAVE HISTORY --------
     filename = f"history_{session['user']}.csv"
