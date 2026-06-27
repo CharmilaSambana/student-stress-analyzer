@@ -108,8 +108,7 @@ if score <= 10:
     badge = "🟢 Calm Mind"
 elif score <= 20:
     badge = "🟡 Under Pressure"
-else:
-    badge = "🔴 High Alert"
+else
 # -------- PREDICT --------
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -148,6 +147,14 @@ def predict():
     else:
         result = "High"
         color = "red"
+        
+    # 🎯 BADGE SYSTEM
+    if score <= 10:
+        badge = "🟢 Calm Mind"
+    elif score <= 20:
+        badge = "🟡 Under Pressure"
+    else:
+        badge = "🔴 High Alert"
 
     reasons = []
     suggestions = []
