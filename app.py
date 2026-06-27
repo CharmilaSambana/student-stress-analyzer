@@ -103,7 +103,8 @@ def result_page():
     suggestions=session.get('suggestions', []),
     explanation=session.get('explanation', ''),
     user=session.get('user')
-     )
+    badge=badge,
+    improvement=improvement_score)
 if score <= 10:
     badge = "🟢 Calm Mind"
 elif score <= 20:
@@ -265,9 +266,9 @@ def predict():
     session['reasons'] = reasons
     session['suggestions'] = suggestions
     session['explanation'] = explanation
-    session['badge'] = badge
+    
     improvement_score = 100 - risk_percentage
-    session['improvement'] = improvement_score
+    
 
     # -------- SAVE HISTORY --------
     filename = f"history_{session['user']}.csv"
