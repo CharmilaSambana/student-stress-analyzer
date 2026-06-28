@@ -302,14 +302,20 @@ def history():
     filename = f"history_{session['user']}.csv"
 
     if not os.path.exists(filename):
-        with open(filename, "w"):
-            pass
+    return render_template(
+        "history.html",
+        data=[],
+        dates=[],
+        scores=[],
+        user=session['user']
+    )
 
     with open(filename, "r") as file:
         reader = csv.reader(file)
         next(reader, None)
 
         for row in reader:
+            print("ROW:", row)
             if len(row) < 2:
                 continue
 
