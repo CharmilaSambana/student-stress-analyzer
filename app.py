@@ -300,7 +300,7 @@ def predict():
                 result,
                 f"{risk_percentage}%"
             ])
-
+    return redirect('/result')
 # -------- HISTORY --------
 @app.route('/history')
 def history():
@@ -347,7 +347,7 @@ def history():
         scores=scores,
         user=session['user']
     )
-    return redirect('/result')
+    
 
 # -------- RUN --------
 if __name__ == "__main__":
