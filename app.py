@@ -105,7 +105,7 @@ def result_page():
         user=session.get('user'),
         badge=session.get('badge', ''),
         improvement=session.get('improvement', 0)
-        health_message=session.get('health_message')
+        
     )
 # -------- PREDICT --------
 @app.route('/predict', methods=['POST'])
@@ -222,18 +222,6 @@ def predict():
         reasons.append("You are maintaining a healthy lifestyle")
         suggestions.append("Keep up your good habits!")
 
-    health_message = ""
-
-    if result == "High":
-        health_message = "⚠️ Your stress level is critically high. Immediate attention required."
-
-    elif result == "Moderate":
-        health_message = "⚡ Moderate stress detected. Improve habits to prevent escalation."
-
-    else:
-        health_message = "✅ Your mental condition is stable."
-    
-    session['health_message'] = health_message
     
 # 🧠 SMART AI INSIGHT (DYNAMIC)
     insights = []
