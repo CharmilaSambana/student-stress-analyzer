@@ -271,6 +271,20 @@ def predict():
     # -------- SAVE HISTORY --------
     filename = f"history_{session['user']}.csv"
 
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    already_exists = False
+
+    if os.path.exists(filename):
+        with open(filename, "r") as file:
+            reader = csv.reader(file)
+            next(reader, None)
+
+            for row in reader:
+                if row and row[0] == today:
+                    already_exists = True
+                    break
+    
     file_exists = os.path.exists(filename)
 
     with open(filename, "a", newline="") as file:
@@ -279,13 +293,13 @@ def predict():
     # Write header if file is new
         if not file_exists:
             writer.writerow(["Date", "Score", "Stress Level", "Risk %"])
-
-        writer.writerow([
-        datetime.now().strftime("%Y-%m-%d %H:%M"),
-        f"{score}/32",
-        result,
-        f"{risk_percentage}%"
-        ])
+        if not already_exists:
+            writer.writerow([
+                today = datetime.now().strftime("%Y-%m-%d"),
+                f"{score}/32",
+                result,
+                f"{risk_percentage}%"
+            ])
 
     return redirect('/result')
 
