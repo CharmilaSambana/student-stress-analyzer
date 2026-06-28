@@ -267,7 +267,7 @@ def predict():
     session['badge'] = badge
     session['improvement'] = improvement_score
 
-    return redirect('/result')
+    
     # -------- SAVE HISTORY --------
     filename = f"history_{session['user']}.csv"
 
@@ -287,18 +287,7 @@ def predict():
         f"{risk_percentage}%"
         ])
 
-    return render_template(
-        "result.html",
-        result=result,
-        score=score,
-        color=color,
-        reasons=reasons,
-        suggestions=suggestions,
-        explanation=explanation,
-        risk_percentage=risk_percentage,
-        features=session['features'],
-        user=session['user']
-    )
+    return redirect('/result')
 
 # -------- HISTORY --------
 @app.route('/history')
