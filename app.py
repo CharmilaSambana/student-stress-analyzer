@@ -93,23 +93,19 @@ def result_page():
         return redirect('/dashboard')
 
     return render_template(
-    "result.html",
-    result=session.get('result'),
-    score=session.get('score', 0),
-    risk_percentage=session.get('risk', 0),
-    features=session.get('features', []),
-    color=session.get('color', 'black'),
-    reasons=session.get('reasons', []),
-    suggestions=session.get('suggestions', []),
-    explanation=session.get('explanation', ''),
-    user=session.get('user')
-    badge=badge,
-    improvement=improvement_score)
-if score <= 10:
-    badge = "🟢 Calm Mind"
-elif score <= 20:
-    badge = "🟡 Under Pressure"
-else
+        "result.html",
+        result=session.get('result'),
+        score=session.get('score', 0),
+        risk_percentage=session.get('risk', 0),
+        features=session.get('features', []),
+        color=session.get('color', 'black'),
+        reasons=session.get('reasons', []),
+        suggestions=session.get('suggestions', []),
+        explanation=session.get('explanation', ''),
+        user=session.get('user'),
+        badge=session.get('badge', ''),
+        improvement=session.get('improvement', 0)
+    )
 # -------- PREDICT --------
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -266,10 +262,12 @@ def predict():
     session['reasons'] = reasons
     session['suggestions'] = suggestions
     session['explanation'] = explanation
-    
+        
     improvement_score = 100 - risk_percentage
-    
+    session['badge'] = badge
+    session['improvement'] = improvement_score
 
+    return redirect('/result')
     # -------- SAVE HISTORY --------
     filename = f"history_{session['user']}.csv"
 
