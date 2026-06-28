@@ -302,13 +302,13 @@ def history():
     filename = f"history_{session['user']}.csv"
 
     if not os.path.exists(filename):
-    return render_template(
-        "history.html",
-        data=[],
-        dates=[],
-        scores=[],
-        user=session['user']
-    )
+        return render_template(
+            "history.html",
+            data=[],
+            dates=[],
+            scores=[],
+            user=session['user']
+        )
 
     with open(filename, "r") as file:
         reader = csv.reader(file)
